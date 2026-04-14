@@ -1,0 +1,11 @@
+{
+  "name": "batch-planner",
+  "version": "1.0.0",
+  "description": "Persistent batch state machine for LLM orchestration. Solves context-loss problem in long batch runs.",
+  "type": "component",
+  "scripts": ["scripts/batch_manager.py", "scripts/util.py"],
+  "reference": ["reference/en/batch-planner.md", "reference/zh-cn/batch-planner.md"],
+  "install_to": "~/.claude/skills/batch-planner/",
+  "requires_python": ">=3.9",
+  "author": "Belt"
+}

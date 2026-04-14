@@ -1,0 +1,11 @@
+{
+  "name": "subagent_tracker",
+  "version": "1.0.0",
+  "description": "Fork-and-collect state machine for subagent orchestration. Passes structured global/task context and todo lists to each subagent, then aggregates results.",
+  "type": "component",
+  "scripts": ["scripts/tracker.py", "scripts/util.py"],
+  "reference": ["reference/en/subagent_tracker.md", "reference/zh-cn/subagent_tracker.md"],
+  "install_to": "~/.claude/skills/subagent_tracker/",
+  "requires_python": ">=3.9",
+  "author": "Belt"
+}

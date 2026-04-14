@@ -1,0 +1,28 @@
+[
+  {
+    "id": "task-alpha",
+    "description": "Build the alpha module",
+    "agent": "frontend-engineer",
+    "todos": [
+      {"id": 1, "title": "Create AlphaWidget component"},
+      {"id": 2, "title": "Add unit tests"}
+    ],
+    "context": {"module": "alpha", "priority": "high"}
+  },
+  {
+    "id": "task-beta",
+    "description": "Implement the beta service",
+    "agent": "python-backend-engineer",
+    "todos": [
+      {"id": 1, "title": "Create BetaService class"},
+      {"id": 2, "title": "Write REST endpoint"},
+      {"id": 3, "title": "Add integration tests"}
+    ],
+    "context": {"module": "beta", "priority": "medium"}
+  },
+  {
+    "id": "task-gamma",
+    "description": "Write gamma documentation",
+    "context": {"module": "gamma", "priority": "low"}
+  }
+]
