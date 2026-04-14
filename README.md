@@ -1,10 +1,11 @@
-# Belt — AI-Native App Generator for Claude Code
+# Belt — Build AI-Native Apps for Claude Code
 
 **[中文文档](README.zh-cn.md)**
 
-Belt is a **Go CLI tool** that scaffolds self-contained AI-native apps for Claude Code.
+An **AI-native app** is not a plugin, a webhook, or a wrapper.
+It is a first-class tool that lives *inside* the AI's context: Claude reads its instructions, calls its scripts, and delegates sub-tasks to its own agents — all without leaving the conversation.
 
-Each app is a `skill + subagent + script` bundle — install it into Claude Code and it becomes a first-class tool the AI can use and delegate to directly.
+Belt is a **Go CLI tool** that scaffolds exactly that structure. Run `belt new`, answer a few prompts, and you get a fully wired `skill + subagent + script` bundle ready to install into Claude Code in one command.
 
 > Part of the [projanvil](https://github.com/projanvil) ecosystem.
 
@@ -22,10 +23,12 @@ Claude Code
         └── agents/my-tool.md          ← AI can delegate tasks here
 ```
 
+Every piece of a Belt app is **designed to be read or called by the AI**:
+
 - **Skill** — `SKILL.md` tells Claude *what* this tool does and *how* to invoke it
-- **Script** — Python scripts the skill references for actual computation
+- **Script** — Python scripts the AI calls to perform real computation
 - **Agent** — A subagent `.md` Claude can delegate complex workflows to
-- **Component** — A reusable module (e.g. `batch-planner`) whose reference docs get injected into your skill
+- **Component** — A testable, self-contained module (e.g. `batch-planner`) whose reference docs are injected directly into the skill so Claude knows how to use it
 
 Belt generates this entire structure from an interactive prompt, with **bilingual support** (en / zh-cn), and ships each app with `install.sh` and `install.ps1` for one-command Claude Code integration.
 
@@ -135,9 +138,16 @@ my-tool/
 
 ## Components
 
-Components are reusable modules with scripts and bilingual reference docs.
-When selected during `belt new`, the component's reference doc is injected as a
-summary stub into `SKILL.md`, and the full doc is copied to `reference/<comp>.md`.
+Components are **testable, AI-usable building blocks** — self-contained Python modules with a clear separation between logic and AI interface:
+
+- **Scripts** the AI calls to perform real computation
+- **Bilingual reference docs** injected into `SKILL.md` so Claude knows exactly how to use the component
+- **`pytest`-based test suite** so you can verify behavior before the AI ever touches it
+- **`make test`** wired up out of the box for every component
+
+This makes components the safest surface for extending AI capability: write the logic, test it like normal code, then expose it to Claude via reference docs.
+
+When selected during `belt new`, the component's reference doc is injected as a summary stub into `SKILL.md`, and the full doc is symlinked into `reference/<comp>.md` at install time.
 
 To scaffold a new component:
 
@@ -150,13 +160,13 @@ Structure:
 ```
 components/my-component/
 ├── component.json
-├── scripts/my-component.py
+├── scripts/my-component.py     # AI-callable logic
 ├── reference/
-│   ├── en/my-component.md
+│   ├── en/my-component.md      # AI reads this to understand the component
 │   └── zh-cn/my-component.md
 ├── tests/
-│   └── test_my-component.py
-├── Makefile
+│   └── test_my-component.py   # test before the AI uses it
+├── Makefile                    # make test
 └── requirements.txt
 ```
 

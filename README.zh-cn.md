@@ -1,10 +1,11 @@
-# Belt — Claude Code AI 原生应用生成器
+# Belt — 为 Claude Code 构建 AI 原生应用
 
 **[English](README.md)**
 
-Belt 是一个 **Go CLI 工具**，用于为 Claude Code 构建自包含的 AI 原生应用。
+**AI 原生应用**不是插件、Webhook 或封装层。
+它是一个活在 AI *上下文内部*的一等工具：Claude 读取它的指令、调用它的脚本、将子任务委托给它自己的代理——全程无需离开对话。
 
-每个应用都是一个 `技能（skill）+ 子代理（subagent）+ 脚本（script）` 的组合包——安装到 Claude Code 后，它就成为 AI 可以直接调用和委托的一等工具。
+Belt 是一个 **Go CLI 工具**，用于构建这一完整结构。运行 `belt new`，回答几个问题，即可得到一个完整的 `技能（skill）+ 子代理（subagent）+ 脚本（script）` 组合包，一条命令安装到 Claude Code。
 
 > 隶属于 [projanvil](https://github.com/projanvil) 生态系统。
 
@@ -22,10 +23,12 @@ Claude Code
         └── agents/my-tool.md          ← AI 可委托任务给此代理
 ```
 
+Belt 应用的每一部分都**专为 AI 读取或调用而设计**：
+
 - **技能（Skill）** — `SKILL.md` 告诉 Claude 这个工具*做什么*以及*如何调用*
-- **脚本（Script）** — 技能引用的 Python 脚本，用于实际计算
+- **脚本（Script）** — AI 调用的 Python 脚本，用于执行真实计算
 - **代理（Agent）** — Claude 可以委托复杂工作流的子代理 `.md` 文件
-- **组件（Component）** — 可复用模块（例如 `batch-planner`），其参考文档会被注入到技能中
+- **组件（Component）** — 可测试的自包含模块（例如 `batch-planner`），其参考文档直接注入到技能中，让 Claude 知道如何使用它
 
 Belt 通过交互式提示生成完整结构，支持**双语**（en / zh-cn），并为每个应用附带 `install.sh` 和 `install.ps1`，一键集成到 Claude Code。
 
@@ -135,8 +138,16 @@ my-tool/
 
 ## 组件
 
-组件是带有脚本和双语参考文档的可复用模块。
-在 `belt new` 时选择组件后，组件的参考文档摘要会注入到 `SKILL.md` 中，完整文档会复制到 `reference/<comp>.md`。
+组件是**可测试的 AI 可用构建块**——自包含的 Python 模块，逻辑层与 AI 接口层清晰分离：
+
+- **脚本**：AI 调用以执行真实计算
+- **双语参考文档**：注入到 `SKILL.md` 中，让 Claude 确切知道如何使用该组件
+- **`pytest` 测试套件**：在 AI 使用之前，可像普通代码一样验证行为
+- **`make test`**：每个组件开箱即用
+
+这使得组件成为扩展 AI 能力最安全的方式：先写逻辑、测试代码，再通过参考文档将其暴露给 Claude。
+
+在 `belt new` 时选择组件后，组件的参考文档摘要会注入到 `SKILL.md` 中，完整文档在安装时以符号链接形式写入 `reference/<comp>.md`。
 
 创建新组件：
 
@@ -149,13 +160,13 @@ belt new --type=component my-component
 ```
 components/my-component/
 ├── component.json
-├── scripts/my-component.py
+├── scripts/my-component.py     # AI 可调用的逻辑
 ├── reference/
-│   ├── en/my-component.md
+│   ├── en/my-component.md      # AI 读取此文件了解组件用法
 │   └── zh-cn/my-component.md
 ├── tests/
-│   └── test_my-component.py
-├── Makefile
+│   └── test_my-component.py   # AI 使用前先测试
+├── Makefile                    # make test
 └── requirements.txt
 ```
 
