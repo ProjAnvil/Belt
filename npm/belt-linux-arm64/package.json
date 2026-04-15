@@ -2,8 +2,12 @@
   "name": "@projanvil/belt-linux-arm64",
   "version": "0.0.0",
   "description": "Linux arm64 binary for Belt CLI",
-  "os": ["linux"],
-  "cpu": ["arm64"],
+  "os": [
+    "linux"
+  ],
+  "cpu": [
+    "arm64"
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",

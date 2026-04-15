@@ -2,7 +2,13 @@
   "name": "@projanvil/belt",
   "version": "0.0.0",
   "description": "AI-native app generator for Claude Code",
-  "keywords": ["claude", "ai-native", "cli", "scaffold", "belt"],
+  "keywords": [
+    "claude",
+    "ai-native",
+    "cli",
+    "scaffold",
+    "belt"
+  ],
   "homepage": "https://github.com/ProjAnvil/Belt",
   "license": "MIT",
   "repository": {

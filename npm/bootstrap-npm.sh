@@ -31,6 +31,10 @@ echo "==> Bootstrapping npm packages for @projanvil/belt..."
 echo "    This publishes version 0.0.1 (placeholder) to create each package name."
 echo ""
 
+# Prompt for 2FA OTP once (valid for ~30s, enough for all 6 publishes)
+read -rp "Enter your npm 2FA OTP code: " OTP
+echo ""
+
 for PKG in "${PACKAGES[@]}"; do
   DIR="$ROOT/$PKG"
   echo "--> Publishing @projanvil/$PKG..."
@@ -60,7 +64,12 @@ for PKG in "${PACKAGES[@]}"; do
     fi
   fi
 
-  (cd "$DIR" && npm publish --access public)
+  # If OTP expires mid-run, prompt again
+  if ! (cd "$DIR" && npm publish --access public --otp="$OTP" 2>&1); then
+    echo "   OTP may have expired. Enter a fresh OTP:"
+    read -rp "   New OTP: " OTP
+    (cd "$DIR" && npm publish --access public --otp="$OTP")
+  fi
   echo "   ✓ @projanvil/$PKG@0.0.1 published"
 done
 

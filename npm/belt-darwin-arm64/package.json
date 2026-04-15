@@ -2,8 +2,12 @@
   "name": "@projanvil/belt-darwin-arm64",
   "version": "0.0.0",
   "description": "macOS arm64 binary for Belt CLI",
-  "os": ["darwin"],
-  "cpu": ["arm64"],
+  "os": [
+    "darwin"
+  ],
+  "cpu": [
+    "arm64"
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",
