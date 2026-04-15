@@ -34,6 +34,18 @@ Belt generates this entire structure from an interactive prompt, with **bilingua
 
 ## Installation
 
+### npm (recommended)
+
+```bash
+npm i -g @projanvil/belt@latest
+```
+
+Requires Node.js 18+. Installs the correct pre-built binary for your platform automatically.
+
+### Pre-built binary
+
+Download the binary for your platform from [Releases](../../releases) and place it in your `$PATH`.
+
 ### Build from source
 
 ```bash
@@ -41,10 +53,6 @@ cd cli
 make build
 sudo make install   # copies belt to /usr/local/bin/
 ```
-
-### Pre-built binary
-
-Download the binary for your platform from [Releases](../../releases) and place it in your `$PATH`.
 
 ## Quick Start
 
