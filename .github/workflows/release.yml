@@ -25,11 +25,8 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: '22'           # Trusted Publishing requires Node 22.14+
+          node-version: '24'           # npm 11.5.1+ (required for Trusted Publishing) ships with Node 24
           registry-url: 'https://registry.npmjs.org'  # required for OIDC token exchange
-
-      - name: Upgrade npm
-        run: npm install -g npm@latest   # Trusted Publishing requires npm >= 11.5.1
 
       - name: Extract version
         id: version
