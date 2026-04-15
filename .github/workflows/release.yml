@@ -29,7 +29,15 @@ jobs:
 
       - name: Extract version
         id: version
-        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
+          # Use 'dev' dist-tag for pre-release versions (contain a hyphen)
+          if [[ "$VERSION" == *-* ]]; then
+            echo "NPM_TAG=dev" >> "$GITHUB_OUTPUT"
+          else
+            echo "NPM_TAG=latest" >> "$GITHUB_OUTPUT"
+          fi
 
       # ── Build all platform binaries ─────────────────────────────────────────
       - name: Build binaries
@@ -77,6 +85,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: cli/dist/*
+          prerelease: ${{ contains(github.ref_name, '-') }}
           generate_release_notes: true
 
       # ── Publish platform packages first, then main package ─────────────────
@@ -84,8 +93,9 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
+          NPM_TAG="${{ steps.version.outputs.NPM_TAG }}"
           for dir in npm/belt-darwin-arm64 npm/belt-darwin-x64 npm/belt-linux-x64 npm/belt-linux-arm64 npm/belt-win32-x64; do
-            (cd "$dir" && npm publish --access public)
+            (cd "$dir" && npm publish --access public --tag "$NPM_TAG")
           done
 
       - name: Publish main package
@@ -93,4 +103,4 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           cd npm/belt
-          npm publish --access public
+          npm publish --access public --tag "${{ steps.version.outputs.NPM_TAG }}"
