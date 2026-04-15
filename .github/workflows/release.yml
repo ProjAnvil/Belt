@@ -26,6 +26,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'           # Trusted Publishing requires Node 22.14+
+          registry-url: 'https://registry.npmjs.org'  # required for OIDC token exchange
+
+      - name: Upgrade npm
+        run: npm install -g npm@latest   # Trusted Publishing requires npm >= 11.5.1
 
       - name: Extract version
         id: version
@@ -103,10 +107,10 @@ jobs:
         run: |
           NPM_TAG="${{ steps.version.outputs.NPM_TAG }}"
           for dir in npm/belt-darwin-arm64 npm/belt-darwin-x64 npm/belt-linux-x64 npm/belt-linux-arm64 npm/belt-win32-x64; do
-            (cd "$dir" && npm publish --access public --provenance --tag "$NPM_TAG")
+            (cd "$dir" && npm publish --access public --tag "$NPM_TAG")
           done
 
       - name: Publish main package
         run: |
           cd npm/belt
-          npm publish --access public --provenance --tag "${{ steps.version.outputs.NPM_TAG }}"
+          npm publish --access public --tag "${{ steps.version.outputs.NPM_TAG }}"
