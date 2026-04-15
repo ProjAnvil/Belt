@@ -1,0 +1,96 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: cli/go.mod
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Extract version
+        id: version
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      # ── Build all platform binaries ─────────────────────────────────────────
+      - name: Build binaries
+        run: |
+          set -e
+          cd cli
+          mkdir -p dist
+          CGO_ENABLED=0 GOOS=darwin  GOARCH=arm64 go build -ldflags="-s -w" -o dist/belt-darwin-arm64   .
+          CGO_ENABLED=0 GOOS=darwin  GOARCH=amd64 go build -ldflags="-s -w" -o dist/belt-darwin-x64     .
+          CGO_ENABLED=0 GOOS=linux   GOARCH=amd64 go build -ldflags="-s -w" -o dist/belt-linux-x64      .
+          CGO_ENABLED=0 GOOS=linux   GOARCH=arm64 go build -ldflags="-s -w" -o dist/belt-linux-arm64    .
+          CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o dist/belt-win32-x64.exe  .
+
+      # ── Stamp version into all package.json files ───────────────────────────
+      - name: Stamp versions
+        run: |
+          VERSION="${{ steps.version.outputs.VERSION }}"
+          for dir in npm/belt-darwin-arm64 npm/belt-darwin-x64 npm/belt-linux-x64 npm/belt-linux-arm64 npm/belt-win32-x64 npm/belt; do
+            node -e "
+              const fs = require('fs');
+              const p = JSON.parse(fs.readFileSync('$dir/package.json', 'utf8'));
+              p.version = '$VERSION';
+              if (p.optionalDependencies) {
+                Object.keys(p.optionalDependencies).forEach(k => p.optionalDependencies[k] = '$VERSION');
+              }
+              fs.writeFileSync('$dir/package.json', JSON.stringify(p, null, 2) + '\n');
+            "
+          done
+
+      # ── Move binaries into npm platform packages ────────────────────────────
+      - name: Place binaries
+        run: |
+          cp cli/dist/belt-darwin-arm64    npm/belt-darwin-arm64/bin/belt
+          cp cli/dist/belt-darwin-x64      npm/belt-darwin-x64/bin/belt
+          cp cli/dist/belt-linux-x64       npm/belt-linux-x64/bin/belt
+          cp cli/dist/belt-linux-arm64     npm/belt-linux-arm64/bin/belt
+          cp cli/dist/belt-win32-x64.exe   npm/belt-win32-x64/bin/belt.exe
+          chmod +x npm/belt-darwin-arm64/bin/belt
+          chmod +x npm/belt-darwin-x64/bin/belt
+          chmod +x npm/belt-linux-x64/bin/belt
+          chmod +x npm/belt-linux-arm64/bin/belt
+
+      # ── Create GitHub Release with binaries attached ────────────────────────
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: cli/dist/*
+          generate_release_notes: true
+
+      # ── Publish platform packages first, then main package ─────────────────
+      - name: Publish platform packages
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          for dir in npm/belt-darwin-arm64 npm/belt-darwin-x64 npm/belt-linux-x64 npm/belt-linux-arm64 npm/belt-win32-x64; do
+            (cd "$dir" && npm publish --access public)
+          done
+
+      - name: Publish main package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          cd npm/belt
+          npm publish --access public

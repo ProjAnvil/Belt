@@ -49,5 +49,9 @@ Desktop.ini
 *.pem
 *.key
 
+# ── npm platform binaries (placed here by CI only, never committed) ───────────
+npm/belt-*/bin/belt
+npm/belt-*/bin/belt.exe
+
 # ── Claude / Copilot local config ─────────────────────────────────────────────
 .claude/

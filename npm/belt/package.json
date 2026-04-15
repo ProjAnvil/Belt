@@ -1,0 +1,25 @@
+{
+  "name": "@projanvil/belt",
+  "version": "0.0.0",
+  "description": "AI-native app generator for Claude Code",
+  "keywords": ["claude", "ai-native", "cli", "scaffold", "belt"],
+  "homepage": "https://github.com/ProjAnvil/Belt",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ProjAnvil/Belt.git"
+  },
+  "bin": {
+    "belt": "bin/belt.js"
+  },
+  "files": [
+    "bin/belt.js"
+  ],
+  "optionalDependencies": {
+    "@projanvil/belt-darwin-arm64": "0.0.0",
+    "@projanvil/belt-darwin-x64": "0.0.0",
+    "@projanvil/belt-linux-x64": "0.0.0",
+    "@projanvil/belt-linux-arm64": "0.0.0",
+    "@projanvil/belt-win32-x64": "0.0.0"
+  }
+}
