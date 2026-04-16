@@ -113,7 +113,7 @@ belt/
 │       └── reference/            # 双语参考文档
 │           ├── en/batch-planner.md
 │           └── zh-cn/batch-planner.md
-├── apps/                         # 示例/参考应用
+├── examples/                     # 示例/参考应用
 │   └── hello-belt/
 ├── _template/                    # 人类可读模板源（仅参考）
 └── README.md

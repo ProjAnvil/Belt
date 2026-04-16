@@ -113,7 +113,7 @@ belt/
 │       └── reference/            # Bilingual reference docs
 │           ├── en/batch-planner.md
 │           └── zh-cn/batch-planner.md
-├── apps/                         # Example / reference apps
+├── examples/                     # Example / reference apps
 │   └── hello-belt/
 ├── _template/                    # Human-readable template source (reference only)
 └── README.md
