@@ -5,7 +5,7 @@
   "type": "component",
   "scripts": ["scripts/__COMPONENT_NAME__.py"],
   "reference": ["reference/en/__COMPONENT_NAME__.md", "reference/zh-cn/__COMPONENT_NAME__.md"],
-  "install_to": "~/.claude/skills/__COMPONENT_NAME__/",
+  "installed_as": "reference",
   "requires_python": ">=3.9",
   "author": ""
 }

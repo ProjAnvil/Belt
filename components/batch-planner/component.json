@@ -5,7 +5,7 @@
   "type": "component",
   "scripts": ["scripts/batch_manager.py", "scripts/util.py"],
   "reference": ["reference/en/batch-planner.md", "reference/zh-cn/batch-planner.md"],
-  "install_to": "~/.claude/skills/batch-planner/",
+  "installed_as": "reference",
   "requires_python": ">=3.9",
   "author": "Belt"
 }
