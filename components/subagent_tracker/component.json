@@ -5,7 +5,5 @@
   "type": "component",
   "scripts": ["scripts/tracker.py", "scripts/util.py"],
   "reference": ["reference/en/subagent_tracker.md", "reference/zh-cn/subagent_tracker.md"],
-  "installed_as": "reference",
-  "requires_python": ">=3.9",
   "author": "Belt"
 }
